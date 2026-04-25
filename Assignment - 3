@@ -1,1 +1,80 @@
+#include <iostream>
+#include <unordered_map>
+#include <unordered_set>
+using namespace std;
 
+// Class to handle Movie Ticket System
+class MovieTicket {
+private:
+    // Map: Movie ID -> Set of users who booked tickets
+    unordered_map<int, unordered_set<int>> movieBookings;
+
+public:
+
+    // BOOK operation
+    bool book(int userId, int movieId) {
+        // If already booked OR movie full
+        if (movieBookings[movieId].count(userId) || movieBookings[movieId].size() >= 100) {
+            return false;
+        }
+        movieBookings[movieId].insert(userId);
+        return true;
+    }
+
+    // CANCEL operation
+    bool cancel(int userId, int movieId) {
+        if (movieBookings[movieId].count(userId)) {
+            movieBookings[movieId].erase(userId);
+            return true;
+        }
+        return false;
+    }
+
+    // IS_BOOKED operation
+    bool isBooked(int userId, int movieId) {
+        return movieBookings[movieId].count(userId);
+    }
+
+    // AVAILABLE_TICKETS operation
+    int availableTickets(int movieId) {
+        return 100 - movieBookings[movieId].size();
+    }
+};
+
+int main() {
+    int Q;
+    cin >> Q;
+
+    MovieTicket system; // Create object
+
+    while (Q--) {
+        string query;
+        cin >> query;
+
+        if (query == "BOOK") {
+            int X, Y;
+            cin >> X >> Y;
+            cout << (system.book(X, Y) ? "true" : "false") << endl;
+        }
+
+        else if (query == "CANCEL") {
+            int X, Y;
+            cin >> X >> Y;
+            cout << (system.cancel(X, Y) ? "true" : "false") << endl;
+        }
+
+        else if (query == "IS_BOOKED") {
+            int X, Y;
+            cin >> X >> Y;
+            cout << (system.isBooked(X, Y) ? "true" : "false") << endl;
+        }
+
+        else if (query == "AVAILABLE_TICKETS") {
+            int Y;
+            cin >> Y;
+            cout << system.availableTickets(Y) << endl;
+        }
+    }
+
+    return 0;
+}
