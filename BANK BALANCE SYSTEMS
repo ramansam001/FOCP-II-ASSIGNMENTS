@@ -1,1 +1,88 @@
+#include <iostream>
+#include <unordered_map>
+using namespace std;
 
+// Bank class to manage user accounts
+class Bank {
+private:
+    unordered_map<int, int> accounts; // userID -> balance
+
+public:
+
+    // CREATE operation
+    bool create(int userId, int amount) {
+        if (accounts.find(userId) == accounts.end()) {
+            // User not present → create account
+            accounts[userId] = amount;
+            return true;
+        } else {
+            // User exists → add amount
+            accounts[userId] += amount;
+            return false;
+        }
+    }
+
+    // DEBIT operation
+    bool debit(int userId, int amount) {
+        if (accounts.find(userId) == accounts.end() || accounts[userId] < amount) {
+            return false;
+        }
+        accounts[userId] -= amount;
+        return true;
+    }
+
+    // CREDIT operation
+    bool credit(int userId, int amount) {
+        if (accounts.find(userId) == accounts.end()) {
+            return false;
+        }
+        accounts[userId] += amount;
+        return true;
+    }
+
+    // BALANCE operation
+    int balance(int userId) {
+        if (accounts.find(userId) == accounts.end()) {
+            return -1;
+        }
+        return accounts[userId];
+    }
+};
+
+int main() {
+    int Q;
+    cin >> Q;
+
+    Bank bank; // Create Bank object
+
+    while (Q--) {
+        string query;
+        cin >> query;
+
+        if (query == "CREATE") {
+            int X, Y;
+            cin >> X >> Y;
+            cout << (bank.create(X, Y) ? "true" : "false") << endl;
+        }
+
+        else if (query == "DEBIT") {
+            int X, Y;
+            cin >> X >> Y;
+            cout << (bank.debit(X, Y) ? "true" : "false") << endl;
+        }
+
+        else if (query == "CREDIT") {
+            int X, Y;
+            cin >> X >> Y;
+            cout << (bank.credit(X, Y) ? "true" : "false") << endl;
+        }
+
+        else if (query == "BALANCE") {
+            int X;
+            cin >> X;
+            cout << bank.balance(X) << endl;
+        }
+    }
+
+    return 0;
+}
